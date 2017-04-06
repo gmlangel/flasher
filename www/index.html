@@ -9,12 +9,18 @@
         <link rel="stylesheet" type="text/css" href="css/index.css">
         <!--<script type="text/javascript" src="./engine/threads/UIThread.js"></script>-->
         <script type="text/javascript" src="./engine/SceneLayer.js"></script>
+        <script type="text/javascript" src="./engine/threads/UIThread.js"></script>
         <script>
-            var sc = null;
-            window.onload = function(){
 
-                sc = new SceneLayer(300,300);
+            window.onload = function(){
+                var sc = new SceneLayer(300,300);
                 sc.startRender();
+                document.body.appendChild(sc.sceneNode)
+
+
+                var thre = new UIThread();
+                thre.start();
+                thre.exec('testFun',sc)
             }
 
         </script>

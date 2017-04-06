@@ -5,11 +5,24 @@
 function UIThread(){
     var selfInstance = this;
     var wk = null;
+    var dispatcherObj = document.createElement("div");
 
     /**
      * 用户自定义数据
      * */
     this.data = null;
+
+    this.dispatchEvent = function(e){
+        dispatcherObj.dispatchEvent(e);
+    }
+
+    this.addEventListener = function(ename,func){
+        dispatcherObj.addEventListener(ename,func);
+    }
+
+    this.removeEventListener = function(ename,func){
+        dispatcherObj.removeEventListener(ename,func);
+    }
 
     /**
      * 开启线程

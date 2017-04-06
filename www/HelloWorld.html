@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hello Cocos2d-JS</title>
+    <script type="text/javascript" src="engine/cocos2d-js-v3.13.js" charset="UTF-8"></script>
+    <script type="text/javascript">
+        window.onload = function(){
+            cc.game.onStart = function(){
+                //load resources
+//                cc.LoaderScene.preload(["HelloWorld.png"], function () {
+//                    var MyScene = cc.Scene.extend({
+//                        onEnter:function () {
+//                            this._super();
+//                            var size = cc.director.getWinSize();
+//                            var sprite = cc.Sprite.create("HelloWorld.png");
+//                            sprite.setPosition(size.width / 2, size.height / 2);
+//                            //sprite.setScale(0.8);
+//                            this.addChild(sprite, 0);
+//
+//                            var label = cc.LabelTTF.create("Hello World", "Arial", 40);
+//                            label.setPosition(size.width / 2, size.height / 2);
+//                            this.addChild(label, 1);
+//
+//                        }
+//                    });
+//                    cc.director.runScene(new MyScene());
+//                }, this);
+
+                var myLayer = cc.LayerColor.extend({
+                    isDowned:false,
+                    plan:null,
+                    lis:null,
+                    _bullets:[],
+                    tefie:null,
+                    ctor:function(c,w,h){
+                        this._super(c,w,h);
+
+                        var sceneSize = cc.director.getWinSize();
+                        //添加一架飞机
+                        this.plan = cc.Sprite.create("img/Spaceship.png")
+                        this.plan.scale = 0.5;
+                        this.plan.setPosition(sceneSize.width/2,this.plan.height/2);
+                        this.addChild(this.plan);
+                        // 设置定时器，定时器每隔0.2秒调用一次addBullet方法
+                        this.schedule(this.addBullet,0.2)
+
+                        //添加一个文本输入框
+                        this.tefie = cc.TextFieldTTF.create("test", cc.size(1000,50), cc.TEXT_ALIGNMENT_LEFT,"Arial", 32)
+                        //tefie.setString("sdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdfsdf");
+                        this.tefie.setTextColor(cc.color(0xff,0x66,0x00,0xff));
+                        this.tefie.setAnchorPoint(0,0.5);
+                        this.tefie.scale = 0.5;
+                        this.addChild(this.tefie);
+                        this.tefie.setPosition(0,200);
+
+                        //创建一个事件监听器
+                        this.lis = cc.EventListener.create({
+                            event: cc.EventListener.TOUCH_ONE_BY_ONE,
+                            swallowTouches: true,
+                            onTouchBegan: function (tou, evt) {
+
+                                //do something
+                                var selfreference = evt.getCurrentTarget();
+                                selfreference.tefie.attachWithIME();
+                                var touLoacation = tou.getLocation();
+                                if(cc.rectContainsPoint(selfreference.plan.getBoundingBox(),touLoacation)){
+
+                                    //如果点击的点在飞机的区域内
+                                    selfreference.isDowned = true;
+                                }
+                                return true;
+                            },
+                            onTouchEnded:function(tou,evt){
+                                var selfreference = evt.getCurrentTarget();
+                                selfreference.isDowned = false;
+                            },
+                            onTouchMoved:function(tou,evt){
+                                var selfreference = evt.getCurrentTarget();
+                                if(selfreference.isDowned){
+
+                                    var loca = tou.getLocation();
+                                    selfreference.plan.setPosition(loca.x,loca.y);
+                                }
+
+                            }
+                        });
+                        //添加监听
+                        cc.eventManager.addListener(this.lis,this);
+                    },
+                    addBullet:function(){
+
+                            var winSize = cc.director.getWinSize();
+                            var origin = cc.director.getVisibleOrigin();
+                            // 获得飞机的位置
+                            var planePosition = this.plan.getPosition();
+                            // 子弹穿越屏幕要花费的秒数
+                            var bulletDuration = 1;
+
+                            // 创建一个子弹
+                            var bullet = cc.Sprite.create("img/logo.png");
+
+                            // 根据飞机的位置，初始化子弹的位置
+                            bullet.setPosition(cc.p(planePosition.x,planePosition.y+bullet.getContentSize().height*0.6));
+                            bullet.scale = 0.2;
+                            // 一个移动的动作
+                            // 第一个参数为移动到目标所需要花费的秒数，为了保持速度不变，需要按移动的距离与屏幕高度按比例计算出花费的秒数
+                            var actionMove = cc.MoveTo.create(bulletDuration * ((winSize.height - planePosition.y - bullet.getContentSize().height/2)/winSize.height),
+                                    cc.p(planePosition.x,
+                                            origin.y + winSize.height + bullet.getContentSize().height/2));
+                            // 设置一个回调函数，移动完毕后回调spriteMoveFinished（）方法。
+                            var actionMoveDone = cc.CallFunc.create(this.spriteMoveFinished,this);
+                            // 让子弹执行动作
+                            bullet.runAction(cc.Sequence.create(actionMove,actionMoveDone));
+                            // 为子弹设置标签，以后可以根据这个标签判断是否这个元素为子弹
+                            bullet.setTag(6);
+
+                            this._bullets.push(bullet);
+                            this.addChild(bullet,0);
+                    },
+                    spriteMoveFinished:function(sprite){
+                            // 将元素移除出Layer
+                            this.removeChild(sprite, true);
+                            if(sprite.getTag()==6){
+                                // 把子弹从数组中移除
+                                var index = this._bullets.indexOf(sprite);
+                                if (index > -1) {
+                                    this._bullets.splice(index, 1);
+                                }
+                            }
+                    }
+                });
+                //预加载资源
+                cc.LoaderScene.preload(["img/Spaceship.png","img/logo.png"],function(){
+
+                    var gmlScene = cc.Scene.extend({
+
+                        onEnter:function(){
+                            this._super();
+                            //添加一个背景
+                            var lay = new myLayer(cc.color(0x99,0x99,0x99,0xff));
+                            this.addChild(lay)
+
+                            var label = cc.LabelTTF.create("HelloWorld","Arial",30,cc.size(200,50),1,1)
+                            this.addChild(label);
+                            label.strokeStyle = cc.color(0xff,0xff,0x00,0xff);
+                            label.fillStyle = cc.color(0,0,0,0);
+                            label.setPosition(400,90);
+                        }
+                    });
+                    cc.director.runScene(new gmlScene())
+                });
+
+            };
+            cc.game.run("gameCanvas");
+        };
+    </script>
+</head>
+<body>   
+    <canvas id="gameCanvas" width="800" height="450"></canvas>
+    <input type="text" width="300" height="100" />
+</body>
+</html>

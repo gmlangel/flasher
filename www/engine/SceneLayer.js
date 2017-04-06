@@ -33,7 +33,7 @@ function SceneLayer(w,h,res){
     /**
      * 画布容器节点
      * */
-    this.divNode = null;
+    this.sceneNode = null;
 
     /**
      * 帧频,默认为每秒24帧
@@ -95,14 +95,13 @@ function SceneLayer(w,h,res){
         if(isInited == true){
             return;
         }
-        this.divNode = document.createElement('div');
-        this.divNode.style.width = this.width;// + "px";
-        this.divNode.style.height = this.height;// + "px";
+        this.sceneNode = document.createElement('div');
+        this.sceneNode.style.width = this.width;// + "px";
+        this.sceneNode.style.height = this.height;// + "px";
         this.canvasNode = document.createElement('canvas');
         this.canvasNode.width = this.width
         this.canvasNode.height = this.height
-        this.divNode.appendChild(this.canvasNode);
-        document.body.appendChild(this.divNode);
+        this.sceneNode.appendChild(this.canvasNode);
         isInited = true;
     }
 }
