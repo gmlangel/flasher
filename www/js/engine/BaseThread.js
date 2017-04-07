@@ -1,8 +1,8 @@
 /**
- * 用于UI界面数据处理的线程
+ * 基础线程处理器
  * Created by guominglong on 2017/3/3.
  */
-function UIThread(){
+function BaseThread(){
     var selfInstance = this;
     var wk = null;
     var dispatcherObj = document.createElement("div");
@@ -29,7 +29,7 @@ function UIThread(){
      * */
     this.start = function(){
         if(wk == null){
-            wk = new Worker('./engine/threads/UIWorker.js')
+            wk = new Worker('./engine/BaseWorker.js')
             wk.onmessage = function(e){
                 selfInstance.data = e.data;
                 selfInstance.dispatchEvent(new Event(e.data.type))
@@ -60,5 +60,4 @@ function UIThread(){
     }
 }
 
-UIThread.instance = new UIThread();
 
