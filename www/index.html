@@ -8,19 +8,43 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
         <link rel="stylesheet" type="text/css" href="css/index.css">
         <!--<script type="text/javascript" src="./engine/threads/UIThread.js"></script>-->
-        <script type="text/javascript" src="./engine/SceneLayer.js"></script>
-        <script type="text/javascript" src="./engine/threads/UIThread.js"></script>
+        <script type="text/javascript" src="./js/HeaderBridge.js"></script>
         <script>
 
+
             window.onload = function(){
-                var sc = new SceneLayer(300,300);
-                sc.startRender();
-                document.body.appendChild(sc.sceneNode)
+//                var o = {"format":'name => `${name}`',"format2":'%s'};
+//                let fun = eval.call(null, o.format);
+//                alert(fun('guominglong'));
+//                console.log(o.format2,"gi");
+                //let s = String.raw('abv')
+                //alert(String.fromCodePoint(0xffff))
+                //alert(`${String.fromCodePoint(0x9999)}`);
+                //alert('\u013f'+"_"+'\u{013f}')
 
+               // var buffer = new ArrayBuffer(12);
 
-                var thre = new UIThread();
-                thre.start();
-                thre.exec('testFun',sc)
+//                var x1 = new Int32Array(buffer);
+//                x1[0] = 0xff6600;
+//                var x2 = new Uint8Array(buffer);
+//                x2[0]  = 0x80;
+//                console.log(13);
+                let app = new AppDelegate();
+                app.addEventListener("onttt",functtt);
+                app.addEventListener("onttt2",functtt);
+                app.addEventListener("onttt3",functtt);
+                app.addEventListener("onttt",functtt2);
+                app.removeAllEventListener();
+                app.dispatchEvent(new BaseEvent("onttt"))
+                app.dispatchEvent(new BaseEvent("onttt2"))
+                app.dispatchEvent(new BaseEvent("onttt3"))
+            }
+
+            function functtt(e){
+                alert(3)
+            }
+            function functtt2(e){
+                alert(4)
             }
 
         </script>
