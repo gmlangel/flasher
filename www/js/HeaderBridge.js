@@ -24,6 +24,7 @@ gimport = (jsPath,jsType="text/javascript",...args) => {
 }
 
 //导入用户想要导入的js
+gimport("./js/engine/Mix.js")
 gimport("./js/engine/BaseObject.js")
 gimport("./js/engine/BaseEventDispatcher.js")
 gimport("./js/engine/BaseProxy.js")
@@ -31,5 +32,5 @@ gimport("./js/engine/BaseThread.js")
 gimport("./js/engine/BaseView.js")
 gimport("./js/engine/BaseWorker.js")
 gimport("./js/AppDelegate.js")//http://172.16.3.178/crit/AppDelegate.js亲测可用,没有跨域问题
-
-
+gimport("./js/network/websocket/WebSocketManager.js")
+gimport("./js/network/websocket/WebSocketHandler.js")
