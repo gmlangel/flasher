@@ -2,7 +2,7 @@
  * 重载Event
  * */
 class BaseEvent extends Event{
-    constructor(type,data,...eventInitDict){
+    constructor(type,data=null,...eventInitDict){
         super(type,eventInitDict);
         this.data = data;
         this.gCurrentTarget = null;
@@ -94,5 +94,10 @@ class BaseEventDispatcher extends BaseObject{
         })
         //清空map
         this.events.clear();
+    }
+
+    destroy(){
+        super.destroy();
+        this.removeAllEventListener();
     }
 }

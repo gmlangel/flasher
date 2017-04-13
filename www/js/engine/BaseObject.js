@@ -8,4 +8,10 @@ class BaseObject{
 
     }
 
+    /**
+     * 释放
+     * */
+    destroy(){
+
+    }
 }

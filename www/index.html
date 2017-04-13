@@ -11,7 +11,7 @@
         <script type="text/javascript" src="./js/HeaderBridge.js"></script>
         <script>
 
-
+            var ws = null;
             window.onload = function(){
 //                var o = {"format":'name => `${name}`',"format2":'%s'};
 //                let fun = eval.call(null, o.format);
@@ -30,14 +30,15 @@
 //                x2[0]  = 0x80;
 //                console.log(13);
                 let app = new AppDelegate();
-                app.addEventListener("onttt",functtt);
-                app.addEventListener("onttt2",functtt);
-                app.addEventListener("onttt3",functtt);
-                app.addEventListener("onttt",functtt2);
-                app.removeAllEventListener();
-                app.dispatchEvent(new BaseEvent("onttt"))
-                app.dispatchEvent(new BaseEvent("onttt2"))
-                app.dispatchEvent(new BaseEvent("onttt3"))
+                let pro = new BaseProxy();
+                ws = new WebSocketHandler("ws://172.16.97.85:12399/");
+                ws.addEventListener(WebSocketEvent.SOCKET_CLOSE,function(e){
+                    console.log("socket关闭");
+                })
+
+                ws.addEventListener(WebSocketEvent.SOCKET_DATA,function(e){
+                    console.log(e.data)
+                })
             }
 
             function functtt(e){
@@ -47,10 +48,17 @@
                 alert(4)
             }
 
+            function sendDataToServer(){
+                let txt = document.querySelector("#myinput");
+                if(txt){
+                    ws.sendData(txt.value);
+                }
+            }
         </script>
         <title>Hello World</title>
     </head>
     <body>
-
+        <input id="myinput" type="text" width="300" height="40" />
+        <input type="button" value="发送" onclick="sendDataToServer()" />
     </body>
 </html>
