@@ -9,6 +9,8 @@
         <link rel="stylesheet" type="text/css" href="css/index.css">
         <!--<script type="text/javascript" src="./engine/threads/UIThread.js"></script>-->
         <script type="text/javascript" src="./js/HeaderBridge.js"></script>
+        <script type="text/javascript" src="./js/core/tools/MyTool.js"></script>
+        <script type="text/javascript" src="./js/core/tools/stringview.js"></script>
         <script>
 
             var ws = null;
@@ -31,13 +33,29 @@
 //                console.log(13);
                 let app = new AppDelegate();
                 let pro = new BaseProxy();
-                ws = new WebSocketHandler("ws://172.16.97.85:12399/");
+                ws = new WebSocketHandler("ws://172.16.3.171:3000",["gateway"]);//"ws://172.16.97.85:12399/"
                 ws.addEventListener(WebSocketEvent.SOCKET_CLOSE,function(e){
                     console.log("socket关闭");
                 })
 
                 ws.addEventListener(WebSocketEvent.SOCKET_DATA,function(e){
-                    console.log(e.data)
+                    let str = MyTool.stringByUTF8Buffer(e.data)
+                    console.log(str);
+                })
+
+
+                ws.addEventListener(WebSocketEvent.SOCKET_ERROR,function(e){
+                    console.log(e)
+                })
+
+                ws.addEventListener(WebSocketEvent.SOCKET_CONNECTED,function(e){
+                    console.log(e)
+                    let msg = JSON.stringify({
+                        host: "172.16.0.115",
+                        port: 6000
+                    })
+                    let msgBuffer = new StringView(msg).buffer;
+                    ws.sendData(msgBuffer)
                 })
             }
 
