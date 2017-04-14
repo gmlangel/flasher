@@ -7,8 +7,9 @@ class WebSocketHandler extends BaseEventDispatcher{
      * 初始化
      * @param url  websocket的地址如'ws://html5rocks.websocket.org/echo'
      * @param protocols 可选值,用于约束websocket的子协议如:soap,xmpp等等
+     * @param responseType 设置接受的返回值的类型  可选为string  blob  arraybuffer
      * */
-    constructor(url,...protocols){
+    constructor(url,protocols,responseType = 'arraybuffer'){
         super();
         if(url){
             //根据不同参数,创建不同的webSocket对象
@@ -16,7 +17,7 @@ class WebSocketHandler extends BaseEventDispatcher{
                 this.ws = new WebSocket(url,protocols)
             else
                 this.ws = new WebSocket(url);
-
+            this.ws.binaryType = responseType;
             this.ws.onclose = this.ongClose;
             this.ws.onopen = this.ongOpen;
             this.ws.onmessage = this.ongmessage;
@@ -31,7 +32,7 @@ class WebSocketHandler extends BaseEventDispatcher{
     ongClose(evt){
         //这个地方不用this,是因为this指代websocket.这个问题很奇怪
         evt.currentTarget.delegate.isOpen = false;
-        evt.currentTarget.delegate.dispatchEvent(new WebSocketEvent(WebSocketEvent.SOCKET_CLOSE))
+        evt.currentTarget.delegate.dispatchEvent(new WebSocketEvent(WebSocketEvent.SOCKET_CLOSE,evt))
     }
 
     ongOpen(evt){
@@ -59,6 +60,13 @@ class WebSocketHandler extends BaseEventDispatcher{
             this.ws.send(data);
     }
 
+    /**
+     * 关闭socket
+     * */
+    close(code = WebSocketHandler.CustomCloseCode,reason = WebSocketHandler.CustomCloseReason){
+        this.ws.close(code,reason)
+    }
+
     destroy(){
         super.destroy()
         this.ws.delegate = null;
@@ -68,6 +76,11 @@ class WebSocketHandler extends BaseEventDispatcher{
         this.ws.onopen = null;
     }
 }
+/**
+ * 定义用户主动发起关闭时的状态码
+ * */
+WebSocketHandler.CustomCloseCode = "19870309";
+WebSocketHandler.CustomCloseReason = "用户主动关闭socket";
 
 /**
  * 自定义的websocket相关事件
@@ -83,4 +96,5 @@ WebSocketEvent.SOCKET_ERROR = "WebSocketEvent.socket.error";
 WebSocketEvent.SOCKET_DATA = "WebSocketEvent.socket.data";
 //当socket链接成功
 WebSocketEvent.SOCKET_CONNECTED = "WebSocketEvent.socket.connected";
+
 
