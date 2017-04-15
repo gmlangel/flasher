@@ -72,3 +72,13 @@ MyTool.stringByUTF8Buffer = arrayBuffer => {
 
     return out;
 }
+
+MyTool.mergeUint32ToUint64Str = (u1,u2) => {
+    if(!Number.isInteger(u1) || !Number.isInteger(u2))
+        return "";
+    let str = u1.toString(16);
+    let str2 = u1.toString(16);
+    str = "0".repeat(8 - str.length) + str;
+    str2 = "0".repeat(8 - str2.length) + str2;
+    return `0x${str}${str2}`;
+}
