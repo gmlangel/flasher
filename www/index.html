@@ -7,10 +7,23 @@
         <meta name="msapplication-tap-highlight" content="no">
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width">
         <link rel="stylesheet" type="text/css" href="css/index.css">
-        <!--<script type="text/javascript" src="./engine/threads/UIThread.js"></script>-->
-        <script type="text/javascript" src="./js/HeaderBridge.js"></script>
+
+        <script type="text/javascript" src="./js/engine/Mix.js"></script>
+        <script type="text/javascript" src="./js/engine/BaseObject.js"></script>
+        <script type="text/javascript" src="./js/engine/BaseEventDispatcher.js"></script>
+        <script type="text/javascript" src="./js/engine/BaseProxy.js"></script>
+        <script type="text/javascript" src="./js/engine/BaseThread.js"></script>
+        <script type="text/javascript" src="./js/engine/BaseView.js"></script>
+        <script type="text/javascript" src="./js/engine/BaseWorker.js"></script>
+        <script type="text/javascript" src="./js/AppDelegate.js"></script>
+        <script type="text/javascript" src="./js/network/websocket/SVCDataProxy.js"></script>
+        <script type="text/javascript" src="./js/network/websocket/WebSocketManager.js"></script>
+        <script type="text/javascript" src="./js/network/websocket/WebSocketHandler.js"></script>
+        <script type="text/javascript" src="./js/network/websocket/WebSocketDecoder.js"></script>
+        <script type="text/javascript" src="./js/network/websocket/WebSocketEncoder.js"></script>
         <script type="text/javascript" src="./js/core/tools/MyTool.js"></script>
         <script type="text/javascript" src="./js/core/tools/stringview.js"></script>
+        <script type="text/javascript" src="./js/core/tools/crypto/aes.js"></script>
         <script>
 
             var ws = null;
@@ -33,50 +46,12 @@
 //                console.log(13);
                 let app = new AppDelegate();
                 let pro = new BaseProxy();
-                ws = new WebSocketHandler("ws://172.16.3.171:3000",["gateway"]);//"ws://172.16.97.85:12399/"
-                ws.addEventListener(WebSocketEvent.SOCKET_CLOSE,function(e){
-                    console.log("socket关闭");
-                })
-
-                ws.addEventListener(WebSocketEvent.SOCKET_DATA,function(e){
-                    let str = MyTool.stringByUTF8Buffer(e.data)
-                    console.log(str);
-                })
-
-
-                ws.addEventListener(WebSocketEvent.SOCKET_ERROR,function(e){
-                    console.log(e)
-                })
-
-                ws.addEventListener(WebSocketEvent.SOCKET_CONNECTED,function(e){
-                    console.log(e)
-                    let msg = JSON.stringify({
-                        host: "172.16.0.115",
-                        port: 6000
-                    })
-                    let msgBuffer = new StringView(msg).buffer;
-                    ws.sendData(msgBuffer)
-                })
-            }
-
-            function functtt(e){
-                alert(3)
-            }
-            function functtt2(e){
-                alert(4)
-            }
-
-            function sendDataToServer(){
-                let txt = document.querySelector("#myinput");
-                if(txt){
-                    ws.sendData(txt.value);
-                }
+                let sm = new WebSocketManager();
+                sm.start();
             }
         </script>
         <title>Hello World</title>
     </head>
     <body>
-        <input id="myinput" type="text" width="300" height="40" />
-        <input type="button" value="发送" onclick="sendDataToServer()" />
     </body>
 </html>
