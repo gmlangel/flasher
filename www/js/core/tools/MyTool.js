@@ -73,6 +73,9 @@ MyTool.stringByUTF8Buffer = arrayBuffer => {
     return out;
 }
 
+/**
+ * 将两个uint32的值合成一个uint64的字符串
+ * */
 MyTool.mergeUint32ToUint64Str = (u1,u2) => {
     if(!Number.isInteger(u1) || !Number.isInteger(u2))
         return "";

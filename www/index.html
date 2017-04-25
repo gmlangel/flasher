@@ -16,40 +16,37 @@
         <script type="text/javascript" src="./js/engine/BaseView.js"></script>
         <script type="text/javascript" src="./js/engine/BaseWorker.js"></script>
         <script type="text/javascript" src="./js/AppDelegate.js"></script>
+        <script type="text/javascript" src="js/core/tools/CryptoTool.js"></script>
         <script type="text/javascript" src="./js/network/websocket/SVCDataProxy.js"></script>
-        <script type="text/javascript" src="./js/network/websocket/WebSocketManager.js"></script>
-        <script type="text/javascript" src="./js/network/websocket/WebSocketHandler.js"></script>
         <script type="text/javascript" src="./js/network/websocket/WebSocketDecoder.js"></script>
         <script type="text/javascript" src="./js/network/websocket/WebSocketEncoder.js"></script>
+        <script type="text/javascript" src="./js/network/websocket/WebSocketManager.js"></script>
+        <script type="text/javascript" src="./js/network/websocket/WebSocketHandler.js"></script>
         <script type="text/javascript" src="./js/core/tools/MyTool.js"></script>
         <script type="text/javascript" src="./js/core/tools/stringview.js"></script>
-        <script type="text/javascript" src="./js/core/tools/crypto/aes.js"></script>
-        <script>
 
+
+        <script>
             var ws = null;
             window.onload = function(){
-//                var o = {"format":'name => `${name}`',"format2":'%s'};
-//                let fun = eval.call(null, o.format);
-//                alert(fun('guominglong'));
-//                console.log(o.format2,"gi");
-                //let s = String.raw('abv')
-                //alert(String.fromCodePoint(0xffff))
-                //alert(`${String.fromCodePoint(0x9999)}`);
-                //alert('\u013f'+"_"+'\u{013f}')
+//                var encrypted = CryptoJS.AES.encrypt("Message", "Secret Passphrase");
+//                var decrypted = CryptoJS.AES.decrypt(encrypted, "Secret Passphrase");
+//                console.log(encrypted);
+//                console.log(decrypted);
 
-               // var buffer = new ArrayBuffer(12);
 
-//                var x1 = new Int32Array(buffer);
-//                x1[0] = 0xff6600;
-//                var x2 = new Uint8Array(buffer);
-//                x2[0]  = 0x80;
-//                console.log(13);
-                let app = new AppDelegate();
-                let pro = new BaseProxy();
-                let sm = new WebSocketManager();
-                sm.start();
+//                var myAES = CryptoJS.lib.Cipher._createHelper(CryptoJS.algo.AES);
+//                var ed = myAES.encrypt("Message", "Secret Passphrase");
+//                var dd = myAES.decrypt("U2FsdGVkX19QYafh6yDr2enTWGC7lXynAYhwy5xwZ2w=","Secret Passphrase")
+//                console.log(ed.toString())
+//                console.log(dd.toString());
+//
+//                console.log("end");
+
             }
+
         </script>
+
         <title>Hello World</title>
     </head>
     <body>

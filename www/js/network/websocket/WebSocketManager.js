@@ -19,8 +19,11 @@ class WebSocketManager extends BaseProxy{
             throw new Error("当前浏览器不支持开启websocket");
             return null;
         }
+        new CryptoTool()._makeAESkey();//提前创建AESkey,不然加密或者解密包时会报错
         this.dataProxy = new SVCDataProxy();
         this.dataProxy.delegate = this;
+        WebSocketDecoder.instance.delegate = this;
+        WebSocketEncoder.instance.delegate = this;
         this.isFirstMsg = true;//是否为socket连接成功后传输的第一条消息. 因为第一条消息要做tostring特殊处理,其他的消息用dataProxy来处理
         //lbs连接相关
         this.svc_lbs_hosts = ["172.16.0.115"];//["svc.51talk.com","121.40.96.226"];
@@ -189,19 +192,19 @@ class WebSocketManager extends BaseProxy{
             //解析数据包
             if(this.waitBodys.length > 0)
             {
-                analysisBody(this.waitBodys.shift());
+                //解析数据包
+                WebSocketDecoder.instance.decodePkg(this.waitBodys.shift())
                 execDataBody(null);//执行下一个包
             }
         }
     }
 
     /**
-     * 解析数据包
+     * 解析数据包完毕后的回调
      * */
-    analysisBody(dataBody){
-        let svcPack = WebSocketDecoder.instance.decodePkg(dataBody);
+    analysisBody(svcPack){
         switch(svcPack.commandID){
-            case "":break;
+            case 0:break;
             default:break;
         }
     }
@@ -231,6 +234,8 @@ class WebSocketManager extends BaseProxy{
         }
         this.dataProxy.destroy();
         this.dataProxy = null;
+        WebSocketDecoder.instance.delegate = null;
+        WebSocketEncoder.instance.delegate = null;
         //清空各个数组
         this.clearArr(this.svc_acc_hosts);
         this.clearArr(this.svc_acc_ports);
