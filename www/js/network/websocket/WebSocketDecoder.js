@@ -6,6 +6,7 @@ class WebSocketDecoder extends BaseProxy{
         super();
         this.isDecoding = false;//是否正在解码
         this.waitDecodeArr = [];//等待解码的数据包集合
+
     }
 
     /**
@@ -64,7 +65,7 @@ class WebSocketDecoder extends BaseProxy{
             //解析并从数组中移除第一个数据包
             new CryptoTool(pkg.sequence).decodeAES256(u8Buffer,(callbackData)=>{
                 if(callbackData.code === 0){
-                    pkg.data = callbackData.data.data;
+                    pkg.data = WebSocketDecoder.instance.dataObjByArrayBuff(pkg.commandID,callbackData.data.data);
                 }else{
                     console.log(callbackData.msg);
                 }
@@ -75,6 +76,14 @@ class WebSocketDecoder extends BaseProxy{
         }else{
             this.isDecoding = false;
         }
+    }
+
+    /**
+     * 将arrayBuffer数据解析成一个object
+     * */
+    dataObjByArrayBuff(cmdID,buff){
+        let obj = {};
+        return obj;
     }
 }
 
