@@ -78,7 +78,7 @@ class SVCDataProxy extends BaseProxy{
         //获取到了一个可用包,将结果派发给处理者
         let resultBuffer = Uint8Array(packSize);
         i = 0,j=packSize;
-        for(i<j;i++){
+        for(;i<j;i++){
             resultBuffer[i] = this.mainData.getUint8(i);
         }
         this.delegate.execDataBody(resultBuffer.buffer);

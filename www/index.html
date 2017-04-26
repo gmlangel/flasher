@@ -29,20 +29,8 @@
         <script>
             var ws = null;
             window.onload = function(){
-//                var encrypted = CryptoJS.AES.encrypt("Message", "Secret Passphrase");
-//                var decrypted = CryptoJS.AES.decrypt(encrypted, "Secret Passphrase");
-//                console.log(encrypted);
-//                console.log(decrypted);
-
-
-//                var myAES = CryptoJS.lib.Cipher._createHelper(CryptoJS.algo.AES);
-//                var ed = myAES.encrypt("Message", "Secret Passphrase");
-//                var dd = myAES.decrypt("U2FsdGVkX19QYafh6yDr2enTWGC7lXynAYhwy5xwZ2w=","Secret Passphrase")
-//                console.log(ed.toString())
-//                console.log(dd.toString());
-//
-//                console.log("end");
-
+                    let [x,y] = MyTool.twoUint32ByUint64Str("0xff6600aaff6600aa");
+                console.log(x,y);
             }
 
         </script>

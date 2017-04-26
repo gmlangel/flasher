@@ -182,6 +182,15 @@ class WebSocketManager extends BaseProxy{
     }
 
     /**
+     * 向socket远端发送字节流
+     * */
+    sendData(msgBuffer){
+        if(this.ws){
+            ws.sendData(msgBuffer);
+        }
+    }
+
+    /**
      * 执行数据包
      * */
     execDataBody(dataBody){

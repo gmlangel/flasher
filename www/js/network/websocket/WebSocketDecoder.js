@@ -6,7 +6,6 @@ class WebSocketDecoder extends BaseProxy{
         super();
         this.isDecoding = false;//是否正在解码
         this.waitDecodeArr = [];//等待解码的数据包集合
-
     }
 
     /**
@@ -19,7 +18,6 @@ class WebSocketDecoder extends BaseProxy{
             return;
         }
         this._decode();
-        return pkg;
     }
 
     _decode(){
@@ -56,7 +54,16 @@ class WebSocketDecoder extends BaseProxy{
             offset += 8;
             pkg.reserved = dataView.getUint16(offset);
             offset += 2;
-            //解析包体
+            if(arrBuffer.byteLength == 41){
+                //解析包尾部
+                packfoot = dataView.getUint8(offset);
+                //证明已经处理完毕,交给delegate处理
+                WebSocketDecoder.instance.delegate.analysisBody(pkg);
+                //decode下一个包
+                WebSocketDecoder.instance._decode();
+                return;
+            }
+            //继续解析包体
             let u8Buffer = new Uint8Array(arrBuffer,40,pkg.size - 41);
             offset = pkg.size - 1;
             //解析包尾部
@@ -83,7 +90,94 @@ class WebSocketDecoder extends BaseProxy{
      * */
     dataObjByArrayBuff(cmdID,buff){
         let obj = {};
+        let dv = new DataView(buff);
+        if(SVCCommandHeader.decodeStruct.has(cmdID)){
+            let dataStuct = SVCCommandHeader.decodeStruct.get(cmdID);
+            let j = dataStuct.length;
+            let byteOffset = 0
+            for(let i = 0;i < j;i+=2){
+                let preKey = i>1 ? dataStuct[i-2]:"";
+                byteOffset = this._readData(obj,dv,dataStuct[i],byteOffset,dataStuct[i+1],preKey)
+            }
+        }
         return obj;
+    }
+
+    _readData(obj,dv,key,byteOffset,valType,preKey){
+        let ofset = byteOffset;
+        switch(valType){
+            case "c":
+                obj[key] = dv.getInt8(ofset);
+                ofset+=1;
+                break;
+            case "C":
+                obj[key] = dv.getUint8(ofset);
+                ofset+=1;
+                break;
+            case "s":
+                obj[key] = dv.getInt16(ofset);
+                ofset+=2;
+                break;
+            case "S":
+                obj[key] = dv.getUint16(ofset);
+                ofset+=2;
+                break;
+            case "i":
+                obj[key] = dv.getInt32(ofset);
+                ofset+=4;
+                break;
+            case "I":
+                obj[key] = dv.getUint32(ofset);
+                ofset+=4;
+                break;
+            case "l":
+                obj[key] = MyTool.mergeUint32ToUint64Str(dv.getUint32(ofset),dv.getUint32(ofset+4))
+                ofset+=8;
+                break;
+            case "L":
+                obj[key] = MyTool.mergeUint32ToUint64Str(dv.getUint32(ofset),dv.getUint32(ofset+4))
+                ofset+=8;
+                break;
+            case "str":
+                let strLen = dv.getUint32(ofset);
+                ofset+=4;
+                let str = MyTool.stringByUTF8Buffer(new DataView(dv.buffer,ofset,strLen).buffer)
+                obj[key] = str;
+                ofset+=strLen+1;
+                break;
+            default:
+                //解析复杂结构
+                if(typeof valType === "Array"){
+                    let j = obj[preKey];//获取循环次数
+                    let subArr = [];
+                    if(valType.length == 1){
+                        let subValType = valType[0];
+                        //简单数组结构
+                        for(let i=0;i<j;i++)
+                        {
+                            ofset = this._readData(subArr,dv,i,ofset,subValType,"")
+                        }
+                    }else{
+                        //数组与字典的混合型结构
+                        for(let i=0;i<j;i++)
+                        {
+                            let subObj = {};
+                            //ofset = this._readData(subObj,dv,i,ofset,subValType,"")
+                            let subLength = valType.length;
+                            for(let z=0;z<subLength;z++){
+                                let preKey = z>1?valType[z-2]:"";
+                                ofset = this._readData(subObj,dv,valType[z],ofset,valType[z+1],preKey)
+                            }
+                            subArr.push(subObj);
+                        }
+                    }
+                    obj[key] = subArr;
+                }else{
+                    throw new Error("为识别的类型")
+                }
+                break;
+        }
+        return ofset;
     }
 }
 

@@ -40,7 +40,7 @@ class CryptoTool{
             arrBuffer //ArrayBuffer of the data
         ).then(function(decrypted){
                 //returns an ArrayBuffer containing the decrypted data
-            selfIns.data = new Uint8Array(decrypted)
+            selfIns.data = decrypted
             selfIns.consoleBuffer(selfIns.data,"解密后")
             compCallBack({"code":0,"data":selfIns})
         }).catch(function(err){
@@ -69,7 +69,7 @@ class CryptoTool{
             arrBuffer //ArrayBuffer of data you want to encrypt
         ).then(function(encrypted){
             //returns an ArrayBuffer containing the encrypted data
-            selfIns.data = new Uint8Array(encrypted)
+            selfIns.data = encrypted
             selfIns.consoleBuffer(selfIns.data,"加密后")
             compCallBack({"code":0,"data":selfIns})
         }).catch(function(err){

@@ -85,3 +85,9 @@ MyTool.mergeUint32ToUint64Str = (u1,u2) => {
     str2 = "0".repeat(8 - str2.length) + str2;
     return `0x${str}${str2}`;
 }
+
+MyTool.twoUint32ByUint64Str = (u64) => {
+    let str = u64.substr(2,8);
+    let str2 = u64.substr(10,8);
+    return [Number("0x"+str),Number("0x"+str2)];
+}
