@@ -29,8 +29,9 @@
         <script>
             var ws = null;
             window.onload = function(){
-                    let [x,y] = MyTool.twoUint32ByUint64Str("0xff6600aaff6600aa");
-                console.log(x,y);
+                    let arr = new ArrayBuffer(100);
+                arr.byteLength = 1000;
+                alert(arr.byteLength)
             }
 
         </script>

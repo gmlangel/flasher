@@ -178,7 +178,7 @@ class WebSocketManager extends BaseProxy{
             msg = this.svc_acc_urls.shift();
         }
         let msgBuffer = new StringView(msg).buffer;
-        this.ws.sendData(msgBuffer)
+        this.sendData(msgBuffer)
     }
 
     /**
